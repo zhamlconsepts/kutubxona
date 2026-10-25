@@ -794,7 +794,15 @@ const server = http.createServer((req, res) => {
     reqPath = '/index.html';
   }
 
-  const filePath = path.join(__dirname, reqPath);
+  let filePath = path.join(__dirname, reqPath);
+
+  // Agar root da topilmasa, public papkasidan tekshirish
+  if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
+    const pubPath = path.join(__dirname, 'public', reqPath);
+    if (fs.existsSync(pubPath) && fs.statSync(pubPath).isFile()) {
+      filePath = pubPath;
+    }
+  }
 
   // Path Traversal xavfsizligi
   if (!filePath.startsWith(__dirname)) {

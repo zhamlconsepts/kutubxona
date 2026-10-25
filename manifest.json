@@ -1,13 +1,36 @@
 {
+  "id": "/",
   "name": "Maktab Kutubxonasi — Hisob Tizimi",
   "short_name": "Kutubxona",
-  "description": "Maktab kutubxonalari uchun kitoblar fondi, o'quvchilarga kitob berish va qaytarish hisobi mobil ilovasi.",
+  "description": "Maktab kutubxonalari uchun kitoblar fondi, o'quvchilarga kitob berish, muddatlar nazorati va eslatma tizimi.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui",
+    "browser"
+  ],
+  "orientation": "any",
+  "dir": "ltr",
+  "lang": "uz",
   "background_color": "#2b2824",
   "theme_color": "#2b2824",
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "categories": [
+    "education",
+    "books",
+    "productivity",
+    "utilities"
+  ],
+  "launch_handler": {
+    "client_mode": "auto"
+  },
+  "edge_side_panel": {
+    "preferred_width": 480
+  },
   "icons": [
     {
       "src": "assets/icon-192.png",
@@ -22,6 +45,46 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["education", "books", "productivity"],
-  "lang": "uz"
+  "screenshots": [
+    {
+      "src": "assets/screenshot-desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Maktab Kutubxonasi — Keng ekran kompyuter ko'rinishi"
+    },
+    {
+      "src": "assets/screenshot-mobile.png",
+      "sizes": "720x1280",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Maktab Kutubxonasi — Mobil telefon ko'rinishi"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Yangi Kitob Qo'shish",
+      "short_name": "Kitob Qo'shish",
+      "description": "Kutubxonaga yangi keltirilgan kitobni fondga qabul qilish",
+      "url": "./index.html?action=add-book",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "O'quvchiga Kitob Berish",
+      "short_name": "Kitob Berish",
+      "description": "O'quvchiga kitob biriktirish va muddat belgilash",
+      "url": "./index.html?action=give-book",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
 }

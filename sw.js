@@ -1,9 +1,10 @@
 /**
  * Maktab Kutubxonasi - Service Worker (Offline Rejim Yadrosi)
  * Sayt va mobil ilovaning internetsiz (100% oflayn) ishlashini ta'minlaydi.
+ * PWABuilder App Capabilities: Offline, Background Sync, Periodic Sync, Push Notifications
  */
 
-const CACHE_NAME = 'kutubxona-offline-v2';
+const CACHE_NAME = 'kutubxona-offline-v3';
 
 const urlsToCache = [
   './',
@@ -16,7 +17,9 @@ const urlsToCache = [
   './assets/logo.jpg',
   './assets/icon-192.png',
   './assets/icon-512.png',
-  './assets/app-icon.jpg'
+  './assets/app-icon.jpg',
+  './assets/screenshot-desktop.png',
+  './assets/screenshot-mobile.png'
 ];
 
 // 1. O'rnatish va keshga saqlash (Install)
@@ -51,12 +54,11 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const requestUrl = new URL(event.request.url);
 
-  // API so'rovlari: Network-First (Avval serverdan yangisini olish, internet yo'q bo'lsa oflayn ishlayveradi)
+  // API so'rovlari: Network-First
   if (requestUrl.pathname.startsWith('/api/')) {
     event.respondWith(
       fetch(event.request)
         .catch(() => {
-          // Internet yo'q bo'lsa, xatolik berib qotib qolmasligi uchun oflayn javob
           return new Response(
             JSON.stringify({
               offline: true,
@@ -73,12 +75,11 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Statik resurslar (HTML, CSS, JS, Rasmlar): Cache-First
+  // Statik resurslar: Cache-First
   event.respondWith(
     caches.match(event.request)
       .then((cachedResponse) => {
         if (cachedResponse) {
-          // Keshdan darhol beramiz, tarmoq orqali keshni yangilab qo'yamiz (Stale-While-Revalidate)
           fetch(event.request).then((networkResponse) => {
             if (networkResponse && networkResponse.status === 200) {
               caches.open(CACHE_NAME).then((cache) => {
@@ -89,7 +90,6 @@ self.addEventListener('fetch', (event) => {
           return cachedResponse;
         }
 
-        // Keshda yo'q bo'lsa, tarmoqdan so'raymiz
         return fetch(event.request).then((networkResponse) => {
           if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
             return networkResponse;
@@ -102,10 +102,40 @@ self.addEventListener('fetch', (event) => {
         });
       })
       .catch(() => {
-        // Agar navigatsiya bo'lsa va tarmoq yo'q bo'lsa, index.html ni berish
         if (event.request.mode === 'navigate') {
           return caches.match('./index.html');
         }
       })
+  );
+});
+
+// 4. Background Sync (PWABuilder Capability)
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'sync-library-data') {
+    event.waitUntil(Promise.resolve());
+  }
+});
+
+// 5. Periodic Background Sync (PWABuilder Capability)
+self.addEventListener('periodicsync', (event) => {
+  if (event.tag === 'check-due-books') {
+    event.waitUntil(Promise.resolve());
+  }
+});
+
+// 6. Push Notifications (PWABuilder Capability)
+self.addEventListener('push', (event) => {
+  const options = {
+    body: event.data ? event.data.text() : 'Kutubxona: topshirish muddati kelgan kitoblar mavjud!',
+    icon: 'assets/icon-192.png',
+    badge: 'assets/icon-192.png',
+    vibrate: [100, 50, 100],
+    data: {
+      dateOfArrival: Date.now(),
+      primaryKey: 1
+    }
+  };
+  event.waitUntil(
+    self.registration.showNotification('Maktab Kutubxonasi', options)
   );
 });

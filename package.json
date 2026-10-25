@@ -1,0 +1,18 @@
+{
+  "name": "maktab-kutubxonasi-app",
+  "version": "1.0.0",
+  "description": "Maktab kutubxonalari uchun kitoblar kirim va chiqim hisobi ilovasi. Mobil moslashuvchan va aqlli xotira tizimi bilan jihozlangan.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "kutubxona",
+    "maktab",
+    "kirim-chiqim",
+    "mobile-app"
+  ],
+  "author": "Antigravity",
+  "license": "MIT"
+}

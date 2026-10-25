@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#2b2824">
+  <meta name="description" content="Maktab kutubxonasi — keltirilgan kitoblar hisobi, o'quvchilarga kitob berish va eslatma tizimi.">
+  <title id="page-title">Maktab Kutubxonasi</title>
+  
+  <link rel="icon" type="image/png" href="assets/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Tarmoq holati (Onlayn / Oflayn) indikatori -->
+  <div id="network-toast" class="network-status-toast">
+    <span class="network-status-dot"></span>
+    <span id="network-toast-text">Oflayn rejim faol — ma'lumotlar saqlanmoqda</span>
+  </div>
+
+  <!-- ================================================================== -->
+  <!-- LOADER: 9 Squares 3x3 Grid (Foydalanuvchi taqdim etgan Loader)     -->
+  <!-- ================================================================== -->
+  <div id="global-loader" class="loader-overlay">
+    <div class="loader">
+      <div class="square" id="sq1"></div>
+      <div class="square" id="sq2"></div>
+      <div class="square" id="sq3"></div>
+      <div class="square" id="sq4"></div>
+      <div class="square" id="sq5"></div>
+      <div class="square" id="sq6"></div>
+      <div class="square" id="sq7"></div>
+      <div class="square" id="sq8"></div>
+      <div class="square" id="sq9"></div>
+    </div>
+    <div class="loader-caption" id="loader-caption-text">Yuklanmoqda...</div>
+  </div>
+
+  <!-- Asosiy Konteyner -->
+  <div id="app-viewport-wrapper">
+    <div class="mobile-device-frame" id="app-frame">
+
+      <!-- ================================================================ -->
+      <!-- 1. LOGIN & SIGN UP SCREEN (Foydalanuvchi taqdim etgan Form kodi)  -->
+      <!-- ================================================================ -->
+      <section id="screen-login" class="auth-page-wrapper">
+        <div class="form-container">
+          <p class="title" id="auth-form-title">Xush kelibsiz</p>
+          
+          <!-- Xatolik xabari (Foydalanuvchi taqdim etgan Info Card uslubida) -->
+          <div class="info-alert-card error-style" id="login-error-alert" style="display: none;">
+            <div class="info__icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none"><path fill="#fff" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z" /></svg>
+            </div>
+            <div class="info__title" id="login-error-text">Login yoki parol xato kiritildi!</div>
+            <div class="info__close" id="btn-close-login-error">
+              <svg height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="m15.8333 5.34166-1.175-1.175-4.6583 4.65834-4.65833-4.65834-1.175 1.175 4.65833 4.65834-4.65833 4.6583 1.175 1.175 4.65833-4.6583 4.6583 4.6583 1.175-1.175-4.6583-4.6583z" fill="#fff" /></svg>
+            </div>
+          </div>
+
+          <form class="form" id="main-auth-form">
+            <!-- Faqat Sign-up rejimida ko'rinadigan Maktab nomi maydoni -->
+            <div id="signup-extra-fields" style="display: none;">
+              <input 
+                type="text" 
+                id="auth-input-school-name" 
+                class="input" 
+                placeholder="Maktab yoki Kutubxona nomi (Masalan: 10-maktab)" 
+              />
+            </div>
+
+            <input 
+              type="text" 
+              id="auth-input-username" 
+              class="input" 
+              placeholder="Login / Foydalanuvchi nomi" 
+              required 
+              autocomplete="username"
+            />
+            
+            <input 
+              type="password" 
+              id="auth-input-password" 
+              class="input" 
+              placeholder="Maxfiy parol" 
+              required 
+              autocomplete="current-password"
+            />
+
+            <!-- Faqat Sign-up rejimida ko'rinadigan Parolni tasdiqlash -->
+            <div id="signup-confirm-field" style="display: none;">
+              <input 
+                type="password" 
+                id="auth-input-confirm-password" 
+                class="input" 
+                placeholder="Parolni qayta kiriting" 
+              />
+            </div>
+
+            <!-- Eslab qolish (Checkbox) -->
+            <div class="checkbox-styled-wrapper" id="login-remember-wrapper" style="margin-top: 4px;">
+              <label class="checkbox">
+                <input type="checkbox" id="auth-remember-me" checked />
+                <div class="checkmark">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="1.5" y="1.5" width="21" height="21" rx="5" ry="5" stroke-width="3" />
+                      <polyline points="7 10 12 16 22 2" stroke-width="4" />
+                    </g>
+                  </svg>
+                  <span>Meni doim eslab qolish</span>
+                </div>
+              </label>
+            </div>
+
+            <button type="submit" class="form-btn" id="btn-auth-submit">Tizimga kirish</button>
+          </form>
+
+          <p class="sign-up-label" id="auth-toggle-label">
+            Hisobingiz yo'qmi?<span class="sign-up-link" id="btn-toggle-auth-mode">Ro'yxatdan o'tish (Sign up)</span>
+          </p>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- 2. MAIN APPLICATION                                              -->
+      <!-- ================================================================ -->
+      <section id="screen-app" style="display: none; flex-direction: column; min-height: 100vh; position: relative;">
+        
+        <!-- Pull to Refresh ko'rsatkichi (Instagram va Chrome kabi) -->
+        <div id="pull-to-refresh" class="ptr-box">
+          <div class="ptr-content">
+            <svg class="ptr-icon" id="ptr-icon" viewBox="0 0 24 24">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <span class="ptr-text" id="ptr-text">Yangilash uchun torting</span>
+          </div>
+        </div>
+
+        <!-- Yuqori Nav Bar -->
+        <header class="top-nav-bar">
+          <!-- Maktab nomi (Bosganda tahrirlash ochiladi) -->
+          <div class="nav-user-info" id="btn-open-school-settings" data-tooltip="Maktab nomini o'zgartirish">
+            <div>
+              <div class="nav-school-name">
+                <span id="display-user-name">Maktab Kutubxonasi</span>
+                <svg class="edit-school-icon" viewBox="0 0 24 24">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+              </div>
+              <div class="nav-session-badge">
+                <span class="session-dot"></span>
+                <span id="current-username-badge">Faol seans • Saqlanadi</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- O'ng tomondagi tugmalar -->
+          <div class="nav-actions">
+            <!-- Yo'riqnoma (Tooltip & Instruction) tugmasi -->
+            <button type="button" id="btn-open-instructions" class="icon-btn" data-tooltip="Qo'llanma va Yo'riqnoma" title="Qo'llanma va Yo'riqnoma">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            </button>
+
+            <!-- Foydalanuvchi taqdim etgan Switch (Kun / Tun) -->
+            <label class="switch" data-tooltip="Kunduzgi / Tungi rejim">
+              <input id="theme-toggle-input" type="checkbox" />
+              <div class="slider round">
+                <div class="sun-moon">
+                  <svg id="moon-dot-1" class="moon-dot" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" /></svg>
+                  <svg id="moon-dot-2" class="moon-dot" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" /></svg>
+                  <svg id="moon-dot-3" class="moon-dot" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" /></svg>
+                  <svg id="light-ray-1" class="light-ray" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" /></svg>
+                  <svg id="light-ray-2" class="light-ray" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" /></svg>
+                  <svg id="light-ray-3" class="light-ray" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" /></svg>
+                  <svg id="cloud-1" class="cloud-dark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" /></svg>
+                  <svg id="cloud-2" class="cloud-dark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" /></svg>
+                  <svg id="cloud-3" class="cloud-dark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" /></svg>
+                  <svg id="cloud-4" class="cloud-light" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" /></svg>
+                  <svg id="cloud-5" class="cloud-light" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" /></svg>
+                  <svg id="cloud-6" class="cloud-light" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" /></svg>
+                </div>
+                <div class="stars">
+                  <svg id="star-1" class="star" viewBox="0 0 20 20"><path d="M 0 10 C 10 10,10 10 ,0 10 C 10 10 , 10 10 , 10 20 C 10 10 , 10 10 , 20 10 C 10 10 , 10 10 , 10 0 C 10 10,10 10 ,0 10 Z" /></svg>
+                  <svg id="star-2" class="star" viewBox="0 0 20 20"><path d="M 0 10 C 10 10,10 10 ,0 10 C 10 10 , 10 10 , 10 20 C 10 10 , 10 10 , 20 10 C 10 10 , 10 10 , 10 0 C 10 10,10 10 ,0 10 Z" /></svg>
+                  <svg id="star-3" class="star" viewBox="0 0 20 20"><path d="M 0 10 C 10 10,10 10 ,0 10 C 10 10 , 10 10 , 10 20 C 10 10 , 10 10 , 20 10 C 10 10 , 10 10 , 10 0 C 10 10,10 10 ,0 10 Z" /></svg>
+                  <svg id="star-4" class="star" viewBox="0 0 20 20"><path d="M 0 10 C 10 10,10 10 ,0 10 C 10 10 , 10 10 , 10 20 C 10 10 , 10 10 , 20 10 C 10 10 , 10 10 , 10 0 C 10 10,10 10 ,0 10 Z" /></svg>
+                </div>
+              </div>
+            </label>
+
+            <!-- Ekran o'lchami (Telefon / Komp) -->
+            <button type="button" id="btn-toggle-screen-mode" class="icon-btn" data-tooltip="Keng ekran / Telefon ko'rinishi">
+              <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+            </button>
+
+            <!-- Sozlamalar tugmasi -->
+            <button type="button" id="btn-header-settings" class="icon-btn" data-tooltip="Sozlamalar">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </button>
+          </div>
+        </header>
+
+        <!-- Asosiy Tarkib -->
+        <main class="app-content">
+
+          <!-- ----------------------------------------------------------- -->
+          <!-- 1-BO'LIM: KELTIRILGAN KITOBLAR (Fond & Zaxira)             -->
+          <!-- ----------------------------------------------------------- -->
+          <div id="view-books" class="view-section active">
+            
+            <!-- Statistika qatori -->
+            <div class="stats-strip">
+              <div class="strip-item">
+                <div class="strip-number" id="stat-total-copies">0</div>
+                <div class="strip-label">Jami Fond</div>
+              </div>
+              <div class="strip-item">
+                <div class="strip-number" id="stat-available-copies" style="color: var(--color-success);">0</div>
+                <div class="strip-label">Javonda Bor</div>
+              </div>
+              <div class="strip-item">
+                <div class="strip-number" id="stat-lent-copies" style="color: var(--color-warning);">0</div>
+                <div class="strip-label">O'quvchilarda</div>
+              </div>
+            </div>
+
+            <!-- Sarlavha va Keltirilgan kitob qo'shish tugmasi -->
+            <div class="section-header-row">
+              <div>
+                <h2 class="section-title-serif">Keltirilgan Kitoblar Fondi</h2>
+                <p class="section-subtitle-text">Kutubxonaga keltirilgan va kiritilgan barcha kitoblar</p>
+              </div>
+              <button type="button" class="btn-pill-primary" id="btn-add-new-book" data-tooltip="Yangi kitob qabul qilish">
+                <span>+ Yangi Kitob Qo'shish</span>
+              </button>
+            </div>
+
+            <!-- Qidiruv -->
+            <div class="search-bar-wrapper">
+              <svg class="search-icon-left" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input 
+                type="text" 
+                id="books-search-input" 
+                class="search-input" 
+                placeholder="Kitob nomi, muallifi yoki toifasi bo'yicha..."
+              >
+            </div>
+
+            <!-- Toifalar filtri -->
+            <div class="books-filter-scroll">
+              <button type="button" class="filter-pill active" data-book-cat="all">Barchasi</button>
+              <button type="button" class="filter-pill" data-book-cat="Badiiy adabiyot">Badiiy adabiyot</button>
+              <button type="button" class="filter-pill" data-book-cat="Darslik (Maktab darsligi)">Darsliklar</button>
+              <button type="button" class="filter-pill" data-book-cat="Ertaklar va bolalar adabiyoti">Bolalar adabiyoti</button>
+              <button type="button" class="filter-pill" data-book-cat="Lug'at va ensiklopediya">Lug'atlar</button>
+            </div>
+
+            <!-- Keltirilgan kitoblar kartochkalari -->
+            <div id="books-list-container" class="cards-stream">
+              <!-- JS orqali to'ldiriladi -->
+            </div>
+          </div>
+
+          <!-- ----------------------------------------------------------- -->
+          <!-- 2-BO'LIM: O'QUVCHILARGA KITOB BERISH                       -->
+          <!-- ----------------------------------------------------------- -->
+          <div id="view-students" class="view-section">
+            
+            <!-- Kechikkanlar ogohlantirish banneri -->
+            <div id="students-alert-banner" style="display: none; margin-bottom: 14px;">
+              <!-- JS orqali to'ldiriladi -->
+            </div>
+
+            <!-- Sarlavha va O'quvchiga berish tugmasi -->
+            <div class="section-header-row">
+              <div>
+                <h2 class="section-title-serif">O'quvchilarga Kitob Berish</h2>
+                <p class="section-subtitle-text">Berilgan kitoblar, muddatlar va qaytarib olish nazorati</p>
+              </div>
+              <button type="button" class="btn-pill-primary" id="btn-give-book-to-student" data-tooltip="O'quvchiga kitob biriktirish">
+                <span>+ Kitob Berish</span>
+              </button>
+            </div>
+
+            <!-- Qidiruv -->
+            <div class="search-bar-wrapper">
+              <svg class="search-icon-left" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input 
+                type="text" 
+                id="students-search-input" 
+                class="search-input" 
+                placeholder="O'quvchi ismi, sinfi (masalan: 7-A) yoki kitob nomi..."
+              >
+            </div>
+
+            <!-- Holat filtrlari -->
+            <div class="books-filter-scroll">
+              <button type="button" class="filter-pill active" data-lend-filter="all">Barchasi</button>
+              <button type="button" class="filter-pill danger" data-lend-filter="overdue">Muddati O'tganlar (<span id="count-overdue">0</span>)</button>
+              <button type="button" class="filter-pill warning" data-lend-filter="dueSoon">Yaqinlashgan (3 kun)</button>
+              <button type="button" class="filter-pill" data-lend-filter="active">Muddatida (Faol)</button>
+              <button type="button" class="filter-pill" data-lend-filter="returned">Topshirilganlar</button>
+            </div>
+
+            <!-- Berilgan kitoblar ro'yxati -->
+            <div id="students-list-container" class="cards-stream">
+              <!-- JS orqali to'ldiriladi -->
+            </div>
+          </div>
+
+        </main>
+
+        <!-- ============================================================== -->
+        <!-- ENG PASTIDAGI BO'LIM: Foydalanuvchi taqdim etgan Radio Inputs  -->
+        <!-- ============================================================== -->
+        <nav class="bottom-radio-nav">
+          <div class="radio-inputs">
+            <label class="radio">
+              <input type="radio" name="bottom-tab-radio" id="radio-tab-books" value="view-books" checked />
+              <span class="name">Keltirilgan Kitoblar</span>
+            </label>
+            <label class="radio">
+              <input type="radio" name="bottom-tab-radio" id="radio-tab-students" value="view-students" />
+              <span class="name">O'quvchilarga Kitob Berish</span>
+            </label>
+          </div>
+        </nav>
+
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- MODAL: YO'RIQNOMA VA QO'LLANMA (YANGILANGAN MUKAMMAL QO'LLANMA)  -->
+      <!-- ================================================================ -->
+      <div id="modal-instructions" class="modal-backdrop">
+        <div class="bottom-sheet-modal" style="max-height: 90vh;">
+          <div class="modal-header">
+            <div>
+              <h3 class="modal-title-serif">Kutubxona Tizimidan Foydalanish Qo'llanmasi</h3>
+              <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">Yangilangan 2.0 versiya — Barcha imkoniyatlar bilan tanishing</p>
+            </div>
+            <button type="button" class="modal-close-btn" data-close-modal="modal-instructions">✕</button>
+          </div>
+          <div class="modal-body" style="padding-top: 8px;">
+            
+            <!-- Qo'llanma Tablari (Yorliqlar) -->
+            <div class="guide-tabs-container">
+              <button type="button" class="guide-tab-btn active" data-guide-tab="guide-fond">
+                <span>📖 Fond & Zaxira</span>
+              </button>
+              <button type="button" class="guide-tab-btn" data-guide-tab="guide-give">
+                <span>🎓 Kitob Berish</span>
+              </button>
+              <button type="button" class="guide-tab-btn" data-guide-tab="guide-reminders">
+                <span>⏰ Eslatma & Qo'ng'iroq</span>
+              </button>
+              <button type="button" class="guide-tab-btn" data-guide-tab="guide-extend">
+                <span>🔄 Qaytarish & Uzaytirish</span>
+              </button>
+              <button type="button" class="guide-tab-btn" data-guide-tab="guide-offline">
+                <span>📴 Oflayn & Mobil APK</span>
+              </button>
+              <button type="button" class="guide-tab-btn" data-guide-tab="guide-multi">
+                <span>👥 Multi-Device & Hisobot</span>
+              </button>
+            </div>
+
+            <!-- 1. FOND VA ZAXIRA BO'LIMI -->
+            <div id="guide-fond" class="guide-tab-panel active">
+              <div class="instruction-guide-card">
+                <span class="instruction-badge-tag badge-blue">Yangi Kitob Kirim Qilish</span>
+                <div class="instruction-guide-title">
+                  <span class="instruction-step-num">1</span>
+                  Kutubxonaga yangi kelgan kitoblarni qabul qilish
+                </div>
+                <p class="instruction-guide-text">
+                  Kutubxonaga keltirilgan har qanday kitobni yuqoridagi <strong>"+ Yangi Kitob Qo'shish"</strong> tugmasi orqali kirim qilasiz. Kitob nomi, muallifi, toifasi (Badiiy adabiyot, Darslik, Lug'at), nusxa soni va javon manzilini kiritishingiz kifoya.
+                </p>
+                <div class="instruction-pro-tip">
+                  <span>💡</span>
+                  <span><strong>Aqlli birlashtirish (Merge):</strong> Agar xuddi shu nom va muallifdagi kitob allaqachon ro'yxatda bo'lsa, tizim yangi nusxalarni avtomatik eskisi ustiga qo'shib, umumiy sonini ko'paytiradi.</span>
+                </div>
+              </div>
+
+              <div class="instruction-guide-card">
+                <span class="instruction-badge-tag badge-amber">Zaxirani Boshqarish</span>
+                <div class="instruction-guide-title">
+                  <span class="instruction-step-num">2</span>
+                  Kitob sonini kamaytirish, ko'paytirish yoki o'chirish
+                </div>
+                <p class="instruction-guide-text">
+                  Har qanday kitob kartochkasidagi <strong>"Tahrirlash"</strong> tugmasini bosib, fonddagi nusxalar sonini <strong>[-]</strong> yoki <strong>[+]</strong> tugmalari orqali tezda o'zgartirishingiz, javon manzilini yangilashingiz yoki kitobni fonddan butunlay chiqarib tashlashingiz mumkin.
+                </p>
+              </div>
+
+              <div class="instruction-guide-card">
+                <span class="instruction-badge-tag badge-green">Tezkor Qidiruv & Filtr</span>
+                <div class="instruction-guide-title">
+                  <span class="instruction-step-num">3</span>
+                  Kitob nomi, muallifi va toifasi bo'yicha saralash
+                </div>
+                <p class="instruction-guide-text">
+                  Izlash maydoniga bir necha harf yozish bilan minglab kitoblar orasidan keraklisini bir zumda topasiz. Toifalar filtri (Badiiy, Darsliklar, Lug'atlar) esa kerakli adabiyotni tezda ajratib beradi.
+                </p>
+              </div>
+            </div>
+
+            <!-- 2. O'QUVCHILARGA KITOB BERISH BO'LIMI -->
+            <div id="guide-give" class="guide-tab-panel">
+              <div class="instruction-guide-card">
+                <span class="instruction-badge-tag badge-blue">Asosiy Jarayon</span>
+                <div class="instruction-guide-title">
+                  <span class="instruction-step-num">1</span>
+                  O'quvchiga kitob biriktirish
+                </div>
+                <p class="instruction-guide-text">
+                  <strong>"+ Kitob Berish"</strong> tugmasini bosing. O'quvchi ismi, sinfi (masalan: <em>7-A</em>), telefon raqami va berilayotgan kitob nomini tanlang. Tizim topshirish muddatini avtomatik hisoblab chiqadi.
+                </p>
+              </div>
+
+              <div class="instruction-guide-card" style="border-left: 3px solid var(--color-warning);">
+                <span class="instruction-badge-tag badge-amber">Noyob Xususiyat</span>
+                <div class="instruction-guide-title">
+                  <span class="instruction-step-num">2</span>
+                  Kitob fondda hali bo'lmasa ham berish mumkin!
+                </div>
+                <p class="instruction-guide-text">
+                  Agar o'quvchi kitob so'rab kelsa-yu, siz bu kitobni hali kutubxona ro'yxatiga kiritishga ulgurmagan bo'lsangiz, <strong>tizim sizni to'xtatmaydi!</strong> <em>"Siz bu kitobni kutubxonaga qo'shmadingiz"</em> deb ogohlantiradi va uni o'quvchiga darhol berib, tizimga avtomatik qayd etadi.
+                </p>
+                <div class="instruction-pro-tip">
+                  <span>✨</span>
+                  <span>Bu imkoniyat kutubxonachining qimmatli vaqtini tejaydi: dars oralig'idagi 5 daqiqalik tanaffusda o'quvchini kutdirmasdan darhol kitob berish mumkin!</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. MUDDATLAR VA ESLATMALAR BO'LIMI -->
+            <div id="guide-reminders" class="guide-tab-panel">
+              <div class="instruction-guide-card">
+                <span class="instruction-badge-tag badge-amber">Rangli Nazorat</span>
+                <div class="instruction-guide-title">
+                  <span class="instruction-step-num">1</span>
+                  Kechikkanlar va yaqinlashgan muddatlar
+                </div>
+                <p class="instruction-guide-text">
+                  Tizim muddatlarni har soniyada o'zi hisoblab boradi:
+                  <br>• <strong style="color: var(--color-danger);">Qizil rang:</strong> Topshirish muddati o'tib ketgan (Qarzdorlar).
+                  <br>• <strong style="color: var(--color-warning);">Sariq rang:</strong> Topshirishga 3 kun yoki undan oz vaqt qolganlar.
+                  <br>• <strong style="color: var(--color-success);">Yashil rang:</strong> O'z vaqtida o'qilayotgan faol kitoblar.
+                </p>
+              </div>
+
+              <div class="instruction-guide-card">
+                <span class="instruction-badge-tag badge-purple">Bir Bosishda Aloqa</span>
+                <div class="instruction-guide-title">
+                  <span class="instruction-step-num">2</span>
+                  To'g'ridan-to'g'ri qo'ng'iroq va Eslatma yuborish
+                </div>
+                <p class="instruction-guide-text">
+                  Qarzdor yoki muddat yaqinlashgan o'quvchi kartochkasidagi <strong>"Eslatish"</strong> tugmasini bosing:
+                  <br>• <strong>To'g'ridan-to'g'ri Qo'ng'iroq:</strong> Telefoningizning terish oynasi darhol ochiladi — raqam terib o'tirish shart emas!
+                  <br>• <strong>SMS Yuborish:</strong> O'quvchi va kitob nomi yozilgan tayyor eslatma matni SMS qilib yuboriladi.
+                  <br>• <strong>Telegram:</strong> Shablon xabar bir bosishda Telegram dasturiga yuboriladi.
+                </p>
+              </div>
+            </div>
+
+            <!-- 4. TOPSHIRISH VA UZAYTIRISH BO'LIMI -->
+            <div id="guide-extend" class="guide-tab-panel">
+              <div class="instruction-guide-card">
+                <span class="instruction-badge-tag badge-green">Kitobni Qaytarib Olish</span>
+                <div class="instruction-guide-title">
+                  <span class="instruction-step-num">1</span>
+                  "Topshirildi" — Javonga avtomatik qaytish
+                </div>
+                <p class="instruction-guide-text">
+                  O'quvchi kitobni keltirib topshirganda <strong>"Topshirildi"</strong> tugmasini bosasiz. Amaliyot yakunlanadi va kitob kutubxonaning mavjud javon fondiga avtomatik <strong>+1 dona</strong> bo'lib qaytadi.
+                </p>
+              </div>
+
+              <div class="instruction-guide-card">
+                <span class="instruction-badge-tag badge-blue">Muddatni Cho'zish</span>
+                <div class="instruction-guide-title">
+                  <span class="instruction-step-num">2</span>
+                  Topshirish muddatini uzaytirish
+                </div>
+                <p class="instruction-guide-text">
+                  Agar o'quvchi kitobni to'liq o'qib ulgurmagan bo'lsa, <strong>"Muddatni Uzaytirish"</strong> tugmasini bosing.
+                  <br>Tezkor tugmalar: <strong>+7 kun</strong>, <strong>+10 kun</strong>, <strong>+14 kun</strong>, <strong>+30 kun</strong> yoki taqvimdan istalgan aniq sanani tanlashingiz mumkin.
+                </p>
+              </div>
+            </div>
+
+            <!-- 5. OFLAYN REJIM VA MOBIL APK BO'LIMI -->
+            <div id="guide-offline" class="guide-tab-panel">
+              <div class="instruction-guide-card" style="border-left: 3px solid var(--color-success);">
+                <span class="instruction-badge-tag badge-green">100% Internetsiz (Offline)</span>
+                <div class="instruction-guide-title">
+                  <span class="instruction-step-num">1</span>
+                  Internet butunlay o'chganda ham to'liq ishlaydi!
+                </div>
+                <p class="instruction-guide-text">
+                  Sayt zamonaviy <strong>PWA va Service Worker</strong> texnologiyasi bilan jihozlangan. Barcha uslublar, ikonlar, skriptlar va ma'lumotlar telefoningiz xotirasida lokal saqlanadi. Internet yo'q joyda ham kitob qabul qilishingiz, o'quvchilarga berishingiz va muddatlarni ko'rishingiz mumkin.
+                </p>
+                <div class="instruction-pro-tip">
+                  <span>📶</span>
+                  <span>Internet paydo bo'lganda ma'lumotlar server bilan avtomatik va xavfsiz sinxronlashadi!</span>
+                </div>
+              </div>
+
+              <div class="instruction-guide-card">
+                <span class="instruction-badge-tag badge-purple">Mobil Ilova (APK)</span>
+                <div class="instruction-guide-title">
+                  <span class="instruction-step-num">2</span>
+                  Telefonga APK qilib o'rnatish tartibi
+                </div>
+                <p class="instruction-guide-text">
+                  Saytni Play Market ilovasi kabi APK faylga aylantirish:
+                  <br><strong>1-usul:</strong> Chrome yoki Safari brauzerida <em>"Bosh ekranga qo'shish" (Ilovani o'rnatish)</em> tugmasini bosing. Dastur mustaqil ilova bo'lib tushadi.
+                  <br><strong>2-usul (Toza APK fayl olish):</strong> Loyihangiz GitHub'ga joylangandan so'ng, <strong>PWABuilder.com</strong> saytiga havolani kiritasiz va bir tugma bilan Android uchun tayyor <strong>.apk</strong> paketini yuklab olasiz!
+                </p>
+              </div>
+            </div>
+
+            <!-- 6. KO'P QURILMALI TIZIM VA HISOBOT BO'LIMI -->
+            <div id="guide-multi" class="guide-tab-panel">
+              <div class="instruction-guide-card">
+                <span class="instruction-badge-tag badge-blue">Multi-Device</span>
+                <div class="instruction-guide-title">
+                  <span class="instruction-step-num">1</span>
+                  Bir vaqtning o'zida telefon va kompyuterdan kirish
+                </div>
+                <p class="instruction-guide-text">
+                  Har bir kutubxonachi yoki maktab o'zining mustaqil login va paroli bilan kiradi. Siz bir vaqtning o'zida ham telefoningizdan, ham kutubxonadagi kompyuteringizdan bir xil hisob bilan bemalol ishlashingiz mumkin — barcha o'zgarishlar sinxronlashadi.
+                </p>
+              </div>
+
+              <div class="instruction-guide-card">
+                <span class="instruction-badge-tag badge-green">Hisobotlar</span>
+                <div class="instruction-guide-title">
+                  <span class="instruction-step-num">2</span>
+                  Excel / CSV hisobotni yuklab olish
+                </div>
+                <p class="instruction-guide-text">
+                  Sozlamalar bo'limidagi <strong>"CSV Hisobotni Yuklab Olish"</strong> tugmasini bosish orqali barcha kitoblar fondi, o'quvchilar ro'yxati, topshirish muddatlari va qarzdorlar ro'yxatini to'liq Excel jadvali formatida xotiraga yuklab olasiz.
+                </p>
+              </div>
+
+              <div class="instruction-guide-card">
+                <span class="instruction-badge-tag badge-amber">Moslashuvchanlik</span>
+                <div class="instruction-guide-title">
+                  <span class="instruction-step-num">3</span>
+                  Kunduzgi / Tungi rejim va Keng ekran
+                </div>
+                <p class="instruction-guide-text">
+                  Tepadagi Quyosh/Oy tugmasi orqali ko'zni toliqtirmaydigan <strong>Tungi rejim</strong>ga o'tishingiz, monitor tugmasi orqali esa dasturni katta ekran (noutbuk) yoki ixcham telefon o'lchamiga moslashingiz mumkin.
+                </p>
+              </div>
+            </div>
+
+            <button type="button" class="btn-pill-primary" style="width: 100%; height: 44px; margin-top: 10px;" data-close-modal="modal-instructions">
+              <span>Barchasini tushundim, rahmat!</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================ -->
+      <!-- MODAL: KELTIRILGAN YANGI KITOBNI FONDGA QO'SHISH                  -->
+      <!-- ================================================================ -->
+      <div id="modal-add-book" class="modal-backdrop">
+        <div class="bottom-sheet-modal">
+          <div class="modal-header">
+            <h3 class="modal-title-serif">Yangi Keltirilgan Kitobni Qo'shish</h3>
+            <button type="button" class="modal-close-btn" data-close-modal="modal-add-book">✕</button>
+          </div>
+          <div class="modal-body">
+            <form id="form-add-book">
+              <div class="form-group">
+                <label for="book-input-title" class="form-label">Kitob nomi *</label>
+                <input type="text" id="book-input-title" class="form-control" placeholder="Kitob nomini kiriting" required autocomplete="off">
+              </div>
+
+              <div class="form-group">
+                <label for="book-input-author" class="form-label">Muallifi (Yozuvchisi) *</label>
+                <input type="text" id="book-input-author" class="form-control" placeholder="Muallif ismini kiriting" required autocomplete="off">
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 10px;">
+                <div class="form-group">
+                  <label for="book-input-type" class="form-label">Kitob turi *</label>
+                  <input type="text" id="book-input-type" class="form-control" value="Badiiy adabiyot" required>
+                </div>
+                <div class="form-group">
+                  <label for="book-input-year" class="form-label">Nashr yili</label>
+                  <input type="text" id="book-input-year" class="form-control" value="2026">
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-group">
+                  <label for="book-input-qty" class="form-label">Keltirilgan soni (dona) *</label>
+                  <input type="number" id="book-input-qty" class="form-control" value="1" min="1" required>
+                </div>
+                <div class="form-group">
+                  <label for="book-input-shelf" class="form-label">Javon manzili</label>
+                  <input type="text" id="book-input-shelf" class="form-control" placeholder="A-01 javon">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="book-input-source" class="form-label">Kelgan manbasi / Ta'minotchi</label>
+                <input type="text" id="book-input-source" class="form-control" placeholder="Kutubxona fondi, Xarid yoki Homiylik">
+              </div>
+
+              <button type="submit" class="btn-pill-primary" style="width: 100%; height: 44px; margin-top: 6px;">
+                <span>Fondga Saqlash</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================ -->
+      <!-- MODAL: KITOBNI TAHRIRLASH, SONINI KAMAYTIRISH VA O'CHIRISH        -->
+      <!-- ================================================================ -->
+      <div id="modal-edit-book" class="modal-backdrop">
+        <div class="bottom-sheet-modal">
+          <div class="modal-header">
+            <h3 class="modal-title-serif">Kitobni Tahrirlash va Boshqarish</h3>
+            <button type="button" class="modal-close-btn" data-close-modal="modal-edit-book">✕</button>
+          </div>
+          <div class="modal-body">
+            <form id="form-edit-book">
+              <input type="hidden" id="edit-book-id">
+
+              <div class="form-group">
+                <label for="edit-book-title" class="form-label">Kitob nomi *</label>
+                <input type="text" id="edit-book-title" class="form-control" required autocomplete="off">
+              </div>
+
+              <div class="form-group">
+                <label for="edit-book-author" class="form-label">Muallifi *</label>
+                <input type="text" id="edit-book-author" class="form-control" required autocomplete="off">
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 10px;">
+                <div class="form-group">
+                  <label for="edit-book-type" class="form-label">Kitob turi *</label>
+                  <input type="text" id="edit-book-type" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label for="edit-book-year" class="form-label">Nashr yili</label>
+                  <input type="text" id="edit-book-year" class="form-control">
+                </div>
+              </div>
+
+              <!-- Kitob soni (kamaytirish yoki ko'paytirish) -->
+              <div class="form-group">
+                <label class="form-label">Fonddagi jami soni (dona) *</label>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <button type="button" id="btn-qty-minus" class="btn-card-action" style="height: 42px; width: 44px; font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center;" title="1 dona kamaytirish">-</button>
+                  <input type="number" id="edit-book-qty" class="form-control" style="text-align: center; font-size: 16px; font-weight: 700;" min="0" required>
+                  <button type="button" id="btn-qty-plus" class="btn-card-action" style="height: 42px; width: 44px; font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center;" title="1 dona ko'paytirish">+</button>
+                </div>
+                <small id="edit-book-lent-hint" style="color: var(--text-muted); font-size: 11.5px; margin-top: 4px; display: block;"></small>
+              </div>
+
+              <div class="form-group">
+                <label for="edit-book-shelf" class="form-label">Javon manzili</label>
+                <input type="text" id="edit-book-shelf" class="form-control" placeholder="A-01 javon">
+              </div>
+
+              <div style="display: flex; gap: 10px; margin-top: 14px;">
+                <button type="submit" class="btn-pill-primary" style="flex: 1; height: 44px;">
+                  <span>O'zgarishlarni Saqlash</span>
+                </button>
+                <button type="button" id="btn-delete-book-action" class="btn-pill-secondary" style="height: 44px; color: var(--color-danger); border-color: rgba(168, 61, 49, 0.35);">
+                  <span>O'chirish</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================ -->
+      <!-- MODAL: O'QUVCHIGA KITOB BERISH (FONDDA YO'Q BO'LSA HAM MUMKIN!)   -->
+      <!-- ================================================================ -->
+      <div id="modal-give-book" class="modal-backdrop">
+        <div class="bottom-sheet-modal">
+          <div class="modal-header">
+            <h3 class="modal-title-serif">O'quvchiga Kitob Berish</h3>
+            <button type="button" class="modal-close-btn" data-close-modal="modal-give-book">✕</button>
+          </div>
+          <div class="modal-body">
+            
+            <!-- Foydalanuvchi taqdim etgan Info Alert Card: Fondda yo'q bo'lsa chiqadi -->
+            <div class="info-alert-card" id="alert-book-not-in-fund" style="display: none;">
+              <div class="info__icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" height="24" fill="none"><path fill="#fff" d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z" /></svg>
+              </div>
+              <div class="info__title">Siz bu kitobni kutubxonaga qo'shmadingiz (lekin o'quvchiga berish mumkin, avtomatik qayd etiladi)</div>
+              <div class="info__close" id="btn-dismiss-alert-not-in-fund">
+                <svg height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="m15.8333 5.34166-1.175-1.175-4.6583 4.65834-4.65833-4.65834-1.175 1.175 4.65833 4.65834-4.65833 4.6583 1.175 1.175 4.65833-4.6583 4.6583 4.6583 1.175-1.175-4.6583-4.6583z" fill="#fff" /></svg>
+              </div>
+            </div>
+
+            <form id="form-give-book">
+              <!-- 1. O'quvchi ma'lumotlari -->
+              <div class="form-group">
+                <label for="give-input-student" class="form-label">O'quvchi F.I.Sh. (Ismi) *</label>
+                <input type="text" id="give-input-student" class="form-control" placeholder="Masalan: Karimov Sardor" required autocomplete="off">
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-group">
+                  <label for="give-input-class" class="form-label">Sinfi *</label>
+                  <input type="text" id="give-input-class" class="form-control" placeholder="7-A" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                  <label for="give-input-phone" class="form-label">Telefon (Ixtiyoriy)</label>
+                  <input type="tel" id="give-input-phone" class="form-control" placeholder="+998 90 123 45 67">
+                </div>
+              </div>
+
+              <!-- 2. Kitob ma'lumotlari -->
+              <div class="form-group">
+                <label for="give-input-title" class="form-label">
+                  <span>Kitob nomi *</span>
+                  <span id="give-stock-indicator" style="font-size: 11px; margin-left: 6px; color: var(--text-muted);"></span>
+                </label>
+                <input type="text" id="give-input-title" class="form-control" placeholder="Masalan: O'tkan kunlar" required autocomplete="off">
+              </div>
+
+              <div class="form-group">
+                <label for="give-input-author" class="form-label">Muallifi</label>
+                <input type="text" id="give-input-author" class="form-control" placeholder="Muallif ismi">
+              </div>
+
+              <!-- 3. Muddat -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-group">
+                  <label for="give-input-given-date" class="form-label">Berilgan sana *</label>
+                  <input type="date" id="give-input-given-date" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label for="give-input-due-date" class="form-label">Topshirish muddati *</label>
+                  <input type="date" id="give-input-due-date" class="form-control" required>
+                </div>
+              </div>
+
+              <!-- Tezkor muddat belgilash -->
+              <div style="display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;">
+                <button type="button" class="btn-card-action" data-quick-days="7">+7 kun</button>
+                <button type="button" class="btn-card-action" data-quick-days="10">+10 kun</button>
+                <button type="button" class="btn-card-action" data-quick-days="14">+14 kun</button>
+                <button type="button" class="btn-card-action" data-quick-days="30">+1 oy</button>
+              </div>
+
+              <!-- Izoh -->
+              <div class="form-group">
+                <label for="give-input-notes" class="form-label">Qo'shimcha izoh</label>
+                <input type="text" id="give-input-notes" class="form-control" placeholder="Holati yaxshi, varag'i butun...">
+              </div>
+
+              <button type="submit" class="btn-pill-primary" style="width: 100%; height: 44px;">
+                <span>Kitobni O'quvchiga Berish</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================ -->
+      <!-- MODAL: MAKTAB VA KUTUBXONA MA'LUMOTLARI (SOZLAMALAR)             -->
+      <!-- ================================================================ -->
+      <div id="modal-settings" class="modal-backdrop">
+        <div class="bottom-sheet-modal">
+          <div class="modal-header">
+            <h3 class="modal-title-serif">Maktab va Kutubxona Ma'lumotlari</h3>
+            <button type="button" class="modal-close-btn" data-close-modal="modal-settings">✕</button>
+          </div>
+          <div class="modal-body">
+            <form id="form-school-settings">
+              <div class="form-group">
+                <label for="settings-input-school-name" class="form-label">
+                  Maktab yoki Kutubxona nomi
+                </label>
+                <input 
+                  type="text" 
+                  id="settings-input-school-name" 
+                  class="form-control" 
+                  placeholder="Masalan: 10-maktab kutubxonasi"
+                  required
+                >
+                <small style="color: var(--text-muted); font-size: 11.5px; margin-top: 4px; display: block;">
+                  Raqam kiritsangiz (masalan 10), avtomatik "10-maktab kutubxonasi" bo'ladi.
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label for="settings-input-default-days" class="form-label">
+                  Standart kitob berish muddati (kun)
+                </label>
+                <input 
+                  type="number" 
+                  id="settings-input-default-days" 
+                  class="form-control" 
+                  value="10" 
+                  min="1" 
+                  max="90"
+                >
+              </div>
+
+              <button type="submit" class="btn-pill-primary" style="width: 100%; height: 44px; margin-bottom: 10px;">
+                <span>Sozlamalarni saqlash</span>
+              </button>
+
+              <button type="button" id="btn-export-csv" class="btn-pill-secondary" style="width: 100%; height: 40px; margin-bottom: 10px;">
+                <span>CSV Hisobotni Yuklab Olish</span>
+              </button>
+
+              <button type="button" id="btn-logout-action" class="btn-pill-secondary" style="width: 100%; height: 40px; margin-bottom: 14px;">
+                <span>Tizimdan chiqish (Log out)</span>
+              </button>
+
+              <div class="danger-zone-box" style="padding: 12px 14px; border: 1px solid rgba(224, 109, 96, 0.35); background: var(--color-danger-bg); border-radius: var(--radius-md);">
+                <div style="font-size: 13px; font-weight: 700; color: var(--color-danger); margin-bottom: 4px;">
+                  Hisobni butunlay o'chirish
+                </div>
+                <div style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 10px; line-height: 1.4;">
+                  Diqqat: Ushbu hisob va unga tegishli barcha kitoblar, o'quvchilar va hisobotlar butunlay yo'q qilinadi. Qayta kirganda ham tiklab bo'lmaydi!
+                </div>
+                <button type="button" id="btn-delete-account" class="btn-pill-secondary" style="width: 100%; height: 38px; color: #fff; background: var(--color-danger); border-color: var(--color-danger);">
+                  <span>Hisobni Butunlay O'chirish</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================ -->
+      <!-- MODAL: ESLATMA VA QO'NG'IROQ QILISH                               -->
+      <!-- ================================================================ -->
+      <div id="modal-reminder" class="modal-backdrop">
+        <div class="bottom-sheet-modal">
+          <div class="modal-header">
+            <h3 class="modal-title-serif">Topshirish Eslatmasi va Qo'ng'iroq</h3>
+            <button type="button" class="modal-close-btn" data-close-modal="modal-reminder">✕</button>
+          </div>
+          <div class="modal-body">
+            <div id="reminder-student-info" style="font-size: 13.5px; margin-bottom: 12px; color: var(--text-main);"></div>
+            
+            <!-- To'g'ridan-to'g'ri qo'ng'iroq bloki (shablonsiz terilgan raqamga to'g'ridan to'g'ri) -->
+            <div class="reminder-call-box" style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+              <div>
+                <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Telefon raqami</div>
+                <div id="reminder-phone-display" style="font-size: 15px; font-weight: 700; color: var(--text-main); font-family: monospace;">Kiritilmagan</div>
+              </div>
+              <a id="btn-direct-phone-call" href="#" class="call-action-btn" style="height: 38px; padding: 0 16px; font-size: 13px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                <span>To'g'ridan-to'g'ri Qo'ng'iroq</span>
+              </a>
+            </div>
+
+            <!-- Shablon xabar yuborish bloki -->
+            <div class="form-group">
+              <label for="reminder-textarea" class="form-label">Shablon eslatma xabari</label>
+              <textarea id="reminder-textarea" class="form-control" rows="4" style="resize: none;"></textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+              <a id="btn-direct-sms-send" href="#" class="sms-action-btn" style="height: 42px; justify-content: center; font-size: 13px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span>SMS Yuborish</span>
+              </a>
+              <button type="button" id="btn-send-telegram-text" class="btn-pill-secondary" style="height: 42px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                <span>Telegram</span>
+              </button>
+            </div>
+
+            <button type="button" id="btn-copy-reminder-text" class="btn-pill-secondary" style="width: 100%; height: 38px;">
+              <span>Xabar matnini nusxalash</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================ -->
+      <!-- MODAL: MUDDATNI UZAYTIRISH (SHABLONLAR VA ISTALGAN KUN)           -->
+      <!-- ================================================================ -->
+      <div id="modal-extend" class="modal-backdrop">
+        <div class="bottom-sheet-modal">
+          <div class="modal-header">
+            <h3 class="modal-title-serif">Topshirish Muddatini Uzaytirish</h3>
+            <button type="button" class="modal-close-btn" data-close-modal="modal-extend">✕</button>
+          </div>
+          <div class="modal-body">
+            <p id="extend-info-text" style="font-size: 13.5px; margin-bottom: 14px; color: var(--text-muted);"></p>
+            
+            <div style="font-size: 12px; font-weight: 600; color: var(--text-main); margin-bottom: 8px;">
+              Tezkor muddat shablonlari:
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;">
+              <button type="button" class="btn-card-action extend-choice active" data-extend-val="7">+7 kun (1 hafta)</button>
+              <button type="button" class="btn-card-action extend-choice" data-extend-val="10">+10 kun</button>
+              <button type="button" class="btn-card-action extend-choice" data-extend-val="14">+14 kun (2 hafta)</button>
+              <button type="button" class="btn-card-action extend-choice" data-extend-val="30">+30 kun (1 oy)</button>
+            </div>
+
+            <div style="font-size: 12px; font-weight: 600; color: var(--text-main); margin-bottom: 8px;">
+              Yoki istalgan kunga belgilash:
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 10px; margin-bottom: 12px;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="extend-custom-date" class="form-label" style="font-size: 11.5px;">Istalgan sana:</label>
+                <input type="date" id="extend-custom-date" class="form-control" style="height: 38px;">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="extend-custom-days" class="form-label" style="font-size: 11.5px;">Kun qo'shish:</label>
+                <input type="number" id="extend-custom-days" class="form-control" style="height: 38px;" min="1" max="365" placeholder="Masalan: 5">
+              </div>
+            </div>
+
+            <div id="extend-new-date-preview" style="padding: 10px 12px; background: var(--bg-subtle); border-radius: var(--radius-md); font-size: 13px; text-align: center; border: 1px dashed var(--border-color); margin-bottom: 14px; color: var(--text-main);">
+              Yangi topshirish muddati: <strong id="extend-preview-target">---</strong>
+            </div>
+
+            <button type="button" id="btn-confirm-extend-action" class="btn-pill-primary" style="width: 100%; height: 44px;">
+              <span>Muddatni Uzaytirishni Tasdiqlash</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast bildirishnomalar -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Skriptlar -->
+  <script src="js/data.js"></script>
+  <script src="js/autocomplete.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- Service Worker Ro'yxatdan O'tkazish (Offline Rejim) -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('Service Worker ishga tushdi!', reg.scope))
+          .catch(err => console.log('Service Worker xatolik yuz berdi:', err));
+      });
+    }
+  </script>
+</body>
+</html>

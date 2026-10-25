@@ -1,0 +1,148 @@
+{
+  "users": {
+    "maktab10": {
+      "id": "usr_1792919017131",
+      "username": "maktab10",
+      "displayUsername": "maktab10",
+      "schoolName": "10-maktab",
+      "password": "123",
+      "createdAt": "2026-10-25T09:03:37.131Z"
+    },
+    "zhahsoh@gmail.com": {
+      "id": "usr_1792919698188",
+      "username": "zhahsoh@gmail.com",
+      "displayUsername": "zhahsoh@gmail.com",
+      "schoolName": "8-Maktab",
+      "password": "asd123ghj",
+      "createdAt": "2026-10-25T09:14:58.188Z"
+    },
+    "fordavsorishboyev@gmail.com": {
+      "id": "usr_1792921695730",
+      "username": "fordavsorishboyev@gmail.com",
+      "displayUsername": "fordavsorishboyev@gmail.com",
+      "schoolName": "10-Maktab",
+      "password": "asd123ghj",
+      "createdAt": "2026-10-25T09:48:15.730Z"
+    }
+  },
+  "libraryData": {
+    "maktab10": {
+      "books": [],
+      "transactions": [],
+      "settings": {
+        "schoolName": "10-maktab",
+        "defaultLendDays": 10
+      }
+    },
+    "zhahsoh@gmail.com": {
+      "books": [
+        {
+          "id": "book-1792921309388-476",
+          "title": "otamdan qolgan dalalar",
+          "author": "Abdulla rashidov",
+          "type": "Badiiy adabiyot",
+          "language": "O'zbekcha (Lotin)",
+          "year": "2026",
+          "totalQuantity": 10,
+          "availableQuantity": 10,
+          "lentQuantity": 0,
+          "barcode": "MAK-25472",
+          "shelf": "1",
+          "createdAt": "2026-10-25T09:41:49.388Z"
+        }
+      ],
+      "transactions": [
+        {
+          "id": "tx-1792921361606",
+          "bookId": "book-1792921309388-476",
+          "bookTitle": "otamdan qolgan dalalar",
+          "author": "Abdulla rashidov",
+          "type": "chiqim",
+          "category": "Badiiy adabiyot",
+          "quantity": 1,
+          "language": "O'zbekcha (Lotin)",
+          "year": "2026",
+          "studentName": "Sardor",
+          "studentClass": "11",
+          "studentPhone": "+998940104039",
+          "recipientOrSource": "Sardor (11)",
+          "givenDate": "2026-10-25",
+          "dueDate": "2026-11-01",
+          "notes": "yangi",
+          "date": "2026-10-25T09:42:41.606Z",
+          "status": "Qaytarildi",
+          "returnDate": "2026-10-25T10:05:50.083Z"
+        },
+        {
+          "id": "tx-1792921309388",
+          "bookId": "book-1792921309388-476",
+          "bookTitle": "otamdan qolgan dalalar",
+          "author": "Abdulla rashidov",
+          "type": "kirim",
+          "category": "Badiiy adabiyot",
+          "quantity": 10,
+          "language": "O'zbekcha (Lotin)",
+          "year": "2026",
+          "studentName": "",
+          "studentClass": "",
+          "studentPhone": "",
+          "recipientOrSource": "yoshlar markazi",
+          "givenDate": "2026-10-25",
+          "dueDate": "",
+          "notes": "",
+          "date": "2026-10-25T09:41:49.388Z",
+          "status": "Bajarildi"
+        }
+      ],
+      "settings": {
+        "schoolName": "8-Maktab",
+        "defaultLendDays": 10
+      }
+    },
+    "fordavsorishboyev@gmail.com": {
+      "books": [
+        {
+          "id": "book-1792921728867-589",
+          "title": "iqtidor",
+          "author": "xikmatulla",
+          "type": "Badiiy adabiyot",
+          "language": "O'zbekcha (Lotin)",
+          "year": "2026",
+          "totalQuantity": 1,
+          "availableQuantity": 1,
+          "lentQuantity": 0,
+          "barcode": "MAK-87192",
+          "shelf": "8",
+          "isFundBook": true,
+          "createdAt": "2026-10-25T09:48:48.867Z"
+        }
+      ],
+      "transactions": [
+        {
+          "id": "tx-1792921728867",
+          "bookId": "book-1792921728867-589",
+          "bookTitle": "iqtidor",
+          "author": "xikmatulla",
+          "type": "kirim",
+          "category": "Badiiy adabiyot",
+          "quantity": 1,
+          "language": "O'zbekcha (Lotin)",
+          "year": "2026",
+          "studentName": "",
+          "studentClass": "",
+          "studentPhone": "",
+          "recipientOrSource": "yoshlar markazi",
+          "givenDate": "2026-10-25",
+          "dueDate": "",
+          "notes": "",
+          "date": "2026-10-25T09:48:48.867Z",
+          "status": "Bajarildi"
+        }
+      ],
+      "settings": {
+        "schoolName": "10-Maktab",
+        "defaultLendDays": 10
+      }
+    }
+  }
+}
